@@ -1,0 +1,55 @@
+#include <iostream>
+
+using namespace std;
+
+class CGirl {
+public:
+    string m_name; // 声明一个 string 类型的成员变量，用于存储女孩的姓名
+    int m_age; // 声明一个 int 类型的成员变量，用于存储女孩的年龄
+    int *m_ptr; // 声明一个 int 类型的指针，用于指向动态分配的内存
+
+    CGirl() { // 声明一个无参的构造函数，用于创建一个空的 CGirl 对象
+        m_name.clear(); // 调用 string 类的 clear() 方法，清空 m_name 的内容
+        m_age = 0; // 将 m_age 的值设为 0
+        m_ptr = nullptr; // 将 m_ptr 的值设为 nullptr，表示没有指向任何内存
+        cout << "调用了CGirl（）构造函数。\n"; // 输出一条提示信息，表示调用了这个构造函数
+    }
+
+    CGirl(const CGirl &gg) { // 声明一个带一个 CGirl 引用参数的构造函数，用于创建一个复制自另一个 CGirl 对象的 CGirl 对象
+        m_name = "漂亮的" + gg.m_name; // 将传入的参数 gg 的 m_name 前面加上 "漂亮的" 赋值给 m_name
+        m_age = gg.m_age - 1; // 将传入的参数 gg 的 m_age 减 1 赋值给 m_age
+        m_ptr = new int; // 为 m_ptr 分配一个新的 int 类型的内存空间
+        //*m_ptr=*gg.m_ptr; // 将传入的参数 gg 的 m_ptr 所指向的内存的值赋值给 m_ptr 所指向的内存
+        memcpy(m_ptr, gg.m_ptr, sizeof(int)); // 使用 memcpy 函数，将传入的参数 gg 的 m_ptr 所指向的内存的内容复制到 m_ptr 所指向的内存
+        cout << "调用了CGirl（const CGirl &gg）拷贝构造函数。\n"; // 输出一条提示信息，表示调用了这个构造函数
+    }
+
+    ~CGirl() { // 声明一个析构函数，用于销毁 CGirl 对象
+        if (m_ptr == nullptr) { // 如果 m_ptr 不为空，表示有指向动态分配的内存
+            delete m_ptr; // 释放 m_ptr 所指向的内存
+            m_ptr = nullptr; // 将 m_ptr 设为 nullptr，表示没有指向任何内存
+        }
+        cout << "调用了~CGirl()\n"; // 输出一条提示信息，表示调用了这个析构函数
+    }
+
+    void show() { // 声明一个成员函数，用于显示 CGirl 对象的信息
+        cout << "姓名：" << m_name << "，年龄：" << m_age << ",m_ptr=" << m_ptr << ",*m_ptr=" << *m_ptr
+             << endl; // 输出 m_name，m_age，m_ptr 和 m_ptr 所指向的内存的值
+    }
+};
+
+
+int main() {
+    CGirl g1; // 使用无参构造函数创建一个 CGirl 对象，其姓名和年龄都为空，m_ptr 为 nullptr
+    g1.m_name = "西施"; // 为 g1 的 m_name 赋值为 "西施"
+    g1.m_age = 23; // 为 g1 的 m_age 赋值为 23
+    g1.m_ptr = new int(3); // 为 g1 的 m_ptr 分配一个新的 int 类型的内存空间，并赋值为 3
+    g1.show(); // 调用 g1 的 show() 方法，显示 g1 的信息
+
+    CGirl g2(g1); // 使用带一个 CGirl 引用参数的构造函数创建一个 CGirl 对象，其信息为 g1 的复制
+    *g2.m_ptr = 8; // 修改 g2 的 m_ptr 所指向的内存的值为 8
+    g1.show(); // 调用 g1 的 show() 方法，显示 g1 的信息
+    g2.show(); // 调用 g2 的 show() 方法，显示 g2 的信息
+
+    return 0; // 程序正常结束，返回 0
+}
